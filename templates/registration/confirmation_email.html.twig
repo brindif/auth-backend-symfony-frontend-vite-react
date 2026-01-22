@@ -1,0 +1,14 @@
+<h1>Veuillez confirmer votre adresse mail.</h1>
+
+<p>
+    Vous pouvez confirmez votre inscription à la platforme RPG en cliquant sur le lien suivant : <br /><br />
+    <a href="{{ signedUrl|raw }}">Confirmer mon adresse mail</a>.
+    Ce lien expirera dans {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+</p>
+<p>
+    Si le lien ne s'affiche pas, saisissez l'adresse suivante : {{ signedUrl|raw }}
+</p>
+
+<p>
+    Cordialement,
+</p>

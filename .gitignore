@@ -41,6 +41,9 @@
 
 # Build data
 /build/
+*.lock
+/public/*
+!/public/.keep
 
 # Composer PHAR
 /composer.phar
@@ -50,3 +53,17 @@
 
 # Embedded web-server pid file
 /.web-server-pid
+
+# HTTPS certificats
+rpg.local-key.pem
+rpg.local.pem
+
+# env dev
+.env.dev
+.env
+
+# Editor config
+.editorconfig
+
+# Migrations
+/migrations/*.php

@@ -1,0 +1,10 @@
+api_platform:
+    title: 'Jeux de rôle'
+    version: 1.0.0
+    formats:
+        json: ['application/json']
+    defaults:
+        stateless: true
+        pagination_items_per_page: 20
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']

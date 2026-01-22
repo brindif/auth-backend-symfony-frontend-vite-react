@@ -1,0 +1,18 @@
+gesdinet_jwt_refresh_token:
+    refresh_token_class: App\Entity\Auth\RefreshToken
+    ttl: 2592000
+    single_use: true
+
+    cookie:
+        enabled: true
+        http_only: true
+        secure: true
+        same_site: lax
+        path: /
+        domain: null
+        remove_token_from_body: true
+
+    #logout:
+        #path: /api/logout
+        #delete_cookies: ["refresh_token", "BEARER"]
+        #clear_site_data: ["cookies", "storage"]
