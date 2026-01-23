@@ -16,14 +16,14 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Dto\Auth\RegisterInput;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[Route('/api/register', name: 'api_register', methods: ['POST'])]
 class RegistrationController extends AbstractController
 {
     public function __construct(private EmailVerifier $emailVerifier)
     {
     }
 
-    #[Route('/api/register', name: 'api_register')]
-    public function register(
+    public function __invoke(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         Security $security,

@@ -11,9 +11,9 @@ use App\Entity\Auth\User;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
+#[Route('/api/me', name: 'api_patch_current_user', methods: ['PATCH'])]
 final class PatchCurrentUserController
 {
-    #[Route('/api/me', name: 'api_patch_current_user', methods: ['PATCH'])]
     public function __invoke(
         #[CurrentUser] ?User $user,
         Request $request,

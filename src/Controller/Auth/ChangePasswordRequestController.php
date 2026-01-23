@@ -17,7 +17,7 @@ use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-#[Route('/change-password-request', name: 'app_change_password_request')]
+#[Route('/api/change-password-request', name: 'app_change_password_request', methods: ['POST'])]
 class ChangePasswordRequestController extends AbstractController
 {
     use ResetPasswordControllerTrait;
@@ -31,10 +31,10 @@ class ChangePasswordRequestController extends AbstractController
     /**
      * Display & process form to request a password reset.
      */
-    public function request(Request $request, MailerInterface $mailer): JsonResponse
+    public function __invoke(Request $request, MailerInterface $mailer): JsonResponse
     {
         try{
-            $data = $request->toArray();
+            $data = $request->getPayload()->all();
         } catch (\JsonException $e) {
             return new JsonResponse([
                 'success' => false,
@@ -43,17 +43,17 @@ class ChangePasswordRequestController extends AbstractController
         }
 
         /** @var string $email */
-        $email = $data['email'] || null;
+        $email = $data['email'] ?? null;
 
         return $this->processSendingPasswordResetEmail($email, $mailer);
     }
 
     private function processSendingPasswordResetEmail(
-        string $emailFormData,
+        string $email,
         MailerInterface $mailer
     ): JsonResponse {
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
-            'email' => $emailFormData,
+            'email' => $email,
         ]);
 
         // Do not reveal whether a user account was found or not.
@@ -73,25 +73,32 @@ class ChangePasswordRequestController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $resetUrl = rtrim($this->getParameter('mailer.frontend')).
-            '/reset-password?'.
-            http_build_query(['token' => $resetToken->getToken()], '', '&', PHP_QUERY_RFC3986);;
+        try {
+            $resetUrl = rtrim($this->getParameter('mailer.frontend')).
+                '/update-password?'.
+                http_build_query(['token' => $resetToken->getToken()], '', '&', PHP_QUERY_RFC3986);;
 
-        $email = (new TemplatedEmail())
-            ->from(new Address(
-                $this->getParameter('mailer.email'),
-                $this->getParameter('mailer.sender')
-            ))
-            ->to((string) $user->getEmail())
-            ->subject($this->getParameter('mailer.subject'))
-            ->htmlTemplate('reset_password/email.html.twig')
-            ->context([
-                'resetToken' => $resetToken,
-                'resetUrl' => $resetUrl,
-            ])
-        ;
+            $email = (new TemplatedEmail())
+                ->from(new Address(
+                    $this->getParameter('mailer.email'),
+                    $this->getParameter('mailer.sender')
+                ))
+                ->to((string) $user->getEmail())
+                ->subject($this->getParameter('mailer.subject'))
+                ->htmlTemplate('reset_password/email.html.twig')
+                ->context([
+                    'resetToken' => $resetToken,
+                    'resetUrl' => $resetUrl,
+                ])
+            ;
 
-        $mailer->send($email);
+            $mailer->send($email);
+        } catch (ResetPasswordExceptionInterface $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'change.password.request.error.send.mail'
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);

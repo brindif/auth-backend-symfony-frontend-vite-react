@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Entity\Auth\User;
 
+#[Route('/api/me', name: 'api_get_current_user', methods: ['GET'])]
 final class GetCurrentUserController
 {
-    #[Route('/api/me', name: 'api_get_current_user', methods: ['GET'])]
     public function __invoke(#[CurrentUser] ?User $user): JsonResponse
     {
         if (!$user) {

@@ -2,6 +2,7 @@ api_platform:
     title: 'Jeux de rôle'
     version: 1.0.0
     formats:
+        jsonld: ['application/ld+json']
         json: ['application/json']
     defaults:
         stateless: true

@@ -14,15 +14,15 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Dto\Auth\VerifyEmailInput;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[Route('/api/verify/email', name: 'api_verify_email', methods: ['GET'])]
 class VerifyEmailController extends AbstractController
 {
     public function __construct(private EmailVerifier $emailVerifier)
     {
     }
 
-    #[Route('/api/verify/email', name: 'api_verify_email')]
     //public function verifyUserEmail(Request $request): Response
-    public function verifyUserEmail(
+    public function __invoke(
         Request $request,
         UserRepository $userRepository,
         EntityManagerInterface $em,

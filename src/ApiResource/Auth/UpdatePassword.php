@@ -4,24 +4,24 @@ namespace App\ApiResource\Auth;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Patch;
-use App\Controller\Auth\ResetPasswordController;
 use ApiPlatform\OpenApi\Model\Operation;
-use App\Dto\Auth\ResetPasswordInput;
+use App\Controller\Auth\UpdatePasswordController;
+use App\Dto\Auth\UpdatePasswordInput;
 
 #[ApiResource(
     operations: [
         new Patch(
-            uriTemplate: '/reset-password',
-            controller: ResetPasswordController::class,
+            uriTemplate: '/update-password',
+            controller: UpdatePasswordController::class,
             read: false,
-            input: ResetPasswordInput::class,
+            input: UpdatePasswordInput::class,
             output: false,
-            name: 'app_reset_password',
+            name: 'app_update_password',
             openapi: new Operation(tags: ['Auth'])
         ),
     ]
 )]
-final class ResetPassword
+final class UpdatePassword
 {
 
 }

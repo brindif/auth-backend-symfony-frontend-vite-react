@@ -6,9 +6,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Route('/api/logout', name: 'api_logout', methods: ['POST'])]
 final class LogoutController
 {
-    #[Route('/api/logout', name: 'api_logout', methods: ['POST'])]
     public function __invoke(): JsonResponse
     {
         $response = new JsonResponse(['message' => 'logout.success'], Response::HTTP_OK);
