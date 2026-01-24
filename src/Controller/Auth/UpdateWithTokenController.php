@@ -153,7 +153,7 @@ class UpdateWithTokenController extends AbstractController {
         } catch (ResetPasswordExceptionInterface $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'update.request.error.reset.token'
+                'message' => 'update.with.token.error.reset.token'
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -169,7 +169,7 @@ class UpdateWithTokenController extends AbstractController {
         } else {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'update.request.error.token.undefined'
+                'message' => 'update.with.token.error.invalid.token'
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -196,7 +196,7 @@ class UpdateWithTokenController extends AbstractController {
         } catch (ResetPasswordExceptionInterface $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'update.request.error.send.mail'
+                'message' => 'update.with.token.error.send.mail'
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         return new JsonResponse([
