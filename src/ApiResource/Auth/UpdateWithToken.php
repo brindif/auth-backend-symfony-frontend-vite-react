@@ -5,23 +5,23 @@ namespace App\ApiResource\Auth;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\OpenApi\Model\Operation;
-use App\Controller\Auth\UpdatePasswordController;
-use App\Dto\Auth\UpdatePasswordInput;
+use App\Controller\Auth\UpdateWithTokenController;
+use App\Dto\Auth\UpdateWithTokenInput;
 
 #[ApiResource(
     operations: [
         new Patch(
-            uriTemplate: '/update-password',
-            controller: UpdatePasswordController::class,
+            uriTemplate: '/me/token',
+            controller: UpdateWithTokenController::class,
             read: false,
-            input: UpdatePasswordInput::class,
+            input: UpdateWithTokenInput::class,
             output: false,
-            name: 'app_update_password',
+            name: 'app_update_with_token',
             openapi: new Operation(tags: ['Auth'])
         ),
     ]
 )]
-final class UpdatePassword
+final class UpdateWithToken
 {
 
 }

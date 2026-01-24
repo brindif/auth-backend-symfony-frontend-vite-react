@@ -7,6 +7,8 @@ use App\Repository\Auth\CheckEmailRepository;
 use Doctrine\ORM\Mapping as ORM;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
+use App\Controller\Auth\UpdateRequestController;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: CheckEmailRepository::class)]
 class CheckEmail implements ResetPasswordRequestInterface
@@ -24,6 +26,9 @@ class CheckEmail implements ResetPasswordRequestInterface
 
     #[ORM\Column(length: 180, nullable: true)]
     private ?string $email = null;
+
+    #[ORM\Column(nullable: true, type: Types::ENUM, options: ['values' => UpdateRequestController::TYPES])]
+    public ?string $type = null;
 
     public function __construct(User $user, \DateTimeInterface $expiresAt, string $selector, string $hashedToken)
     {
@@ -49,6 +54,18 @@ class CheckEmail implements ResetPasswordRequestInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

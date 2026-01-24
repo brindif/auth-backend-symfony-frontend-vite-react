@@ -15,6 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Dto\Auth\RegisterInput;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/register', name: 'api_register', methods: ['POST'])]
 class RegistrationController extends AbstractController
@@ -29,12 +30,15 @@ class RegistrationController extends AbstractController
         Security $security,
         EntityManagerInterface $em,
         ValidatorInterface $validator
-    ): Response
+    ): JsonResponse
     {
         try{
             $data = $request->toArray();
         } catch (\JsonException $e) {
-            return $this->json(['success' => false, 'message' => 'register.error.request'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'register.error.request'
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $dto = new RegisterInput();
@@ -44,7 +48,10 @@ class RegistrationController extends AbstractController
         $violations = $validator->validate($dto);
         if (count($violations) > 0) {
             foreach ($violations as $v) {
-                return $this->json(['success' => false, 'message' => $v->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => $v->getMessage()
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
 
@@ -56,7 +63,10 @@ class RegistrationController extends AbstractController
         $violations = $validator->validate($user);
         if (count($violations) > 0) {
             foreach ($violations as $v) {
-                return $this->json(['success' => false, 'message' => $v->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => $v->getMessage()
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
 
@@ -76,9 +86,12 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
         } catch (\JsonException $e) {
-            return $this->json(['success' => false, 'message' => 'register.error.send.confirmation'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'register.error.send.confirmation'
+            ], Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->json(['success' => true], Response::HTTP_CREATED);
+        return new JsonResponse(['success' => true], Response::HTTP_CREATED);
     }
 }

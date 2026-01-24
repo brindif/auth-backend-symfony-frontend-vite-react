@@ -29,4 +29,14 @@ class CheckEmailRepository extends ServiceEntityRepository implements ResetPassw
     {
         return new CheckEmail($user, $expiresAt, $selector, $hashedToken);
     }
+
+    public function findOneByToken($hashedToken): ?CheckEmail
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.hashedToken = :hashedToken')
+            ->setParameter('hashedToken', $hashedToken)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

@@ -1,0 +1,14 @@
+<h1>Veuillez confirmer votre demande de changement d'adresse mail.</h1>
+
+<p>
+    Vous pouvez accéder au formulaire de changement d'adresse mail au lien suivant : <br /><br />
+    <a href="{{ resetUrl|raw }}">Changer d'adresse mail</a>.
+    Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+</p>
+<p>
+    Si le lien ne s'affiche pas, saisissez l'adresse suivante : {{ resetUrl|raw }}
+</p>
+
+<p>
+    Cordialement,
+</p>
