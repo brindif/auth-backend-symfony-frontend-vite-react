@@ -21,7 +21,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
-#[Route('/api/me/token', name: 'app_update_with_token', methods: ['PATCH'])]
+#[Route('/api/me/token', name: 'api_update_with_token', methods: ['PATCH'])]
 class UpdateWithTokenController extends AbstractController {
     use ResetPasswordControllerTrait;
     

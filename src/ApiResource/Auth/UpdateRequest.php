@@ -16,7 +16,7 @@ use App\Dto\Auth\UpdateRequestInput;
             read: false,
             input: UpdateRequestInput::class,
             output: false,
-            name: 'app_update_request',
+            name: 'api_update_request',
             openapi: new Operation(tags: ['Auth'])
         ),
     ]

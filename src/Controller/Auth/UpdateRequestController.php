@@ -20,7 +20,7 @@ use App\Repository\Auth\CheckEmailRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route('/api/me/request', name: 'app_update_request', methods: ['POST'])]
+#[Route('/api/me/request', name: 'api_update_request', methods: ['POST'])]
 class UpdateRequestController extends AbstractController
 {
     use ResetPasswordControllerTrait;

@@ -6,10 +6,13 @@ use App\Entity\Auth\User;
 use App\Enum\PermissionEnum;
 use App\Repository\Page\TabPermissionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Trait\AuditableTrait;
 
 #[ORM\Entity(repositoryClass: TabPermissionRepository::class)]
 class TabPermission
 {
+    use AuditableTrait;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

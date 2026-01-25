@@ -8,11 +8,13 @@ use App\Repository\Page\TabRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Trait\AuditableTrait;
 
 #[ORM\Entity(repositoryClass: TabRepository::class)]
-#[ApiResource]
 class Tab
 {
+    use AuditableTrait;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
