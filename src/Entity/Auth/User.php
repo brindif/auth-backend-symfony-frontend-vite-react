@@ -2,7 +2,10 @@
 
 namespace App\Entity\Auth;
 
+use App\Entity\Page\TabPermission;
 use App\Repository\Auth\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -42,6 +45,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, TabPermission>
+     */
+    #[ORM\OneToMany(targetEntity: TabPermission::class, mappedBy: 'allowedUser')]
+    private Collection $tabPermissions;
+
+    public function __construct()
+    {
+        $this->tabPermissions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -138,6 +152,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TabPermission>
+     */
+    public function getTabPermissions(): Collection
+    {
+        return $this->tabPermissions;
+    }
+
+    public function addTabPermission(TabPermission $tabPermission): static
+    {
+        if (!$this->tabPermissions->contains($tabPermission)) {
+            $this->tabPermissions->add($tabPermission);
+            $tabPermission->setAllowedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTabPermission(TabPermission $tabPermission): static
+    {
+        if ($this->tabPermissions->removeElement($tabPermission)) {
+            // set the owning side to null (unless already changed)
+            if ($tabPermission->getAllowedUser() === $this) {
+                $tabPermission->setAllowedUser(null);
+            }
+        }
 
         return $this;
     }
