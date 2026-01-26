@@ -2,7 +2,6 @@
 
 namespace App\Entity\Page;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Enum\MenuEnum;
 use App\Repository\Page\TabRepository;
 use Doctrine\Common\Collections\ArrayCollection;
