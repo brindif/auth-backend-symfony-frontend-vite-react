@@ -17,6 +17,10 @@ class TabExistsValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, TabExists::class);
         }
 
+        if (empty($value)) {
+            return;
+        }
+        
         if (!is_string($value)) {
             throw new UnexpectedValueException($value, 'string');
         }

@@ -6,7 +6,7 @@ use App\Validator\Page\TabExists;
 use ApiPlatform\Metadata\ApiProperty;
 use App\Enum\TabTypeEnum;
 
-final class TabPostInput
+final class TabPutInput
 {
     #[Assert\Length(max: 50, maxMessage: 'tab.error.name.length')]
     #[Assert\NotBlank(message: 'tab.error.name.empty')]
@@ -44,7 +44,7 @@ final class TabPostInput
     #[Assert\Choice(choices: [
         TabTypeEnum::NOTES,
         TabTypeEnum::CALENDAR,
-        TabTypeEnum::TREE,
+        TabTypeEnum::TREE
     ], message: 'tab.error.type.invalid')]
     public ?TabTypeEnum $type = null;
 }

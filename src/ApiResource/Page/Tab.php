@@ -2,7 +2,6 @@
 
 namespace App\ApiResource\Page;
 
-use App\Entity\Page\Tab as TabEntity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
@@ -12,31 +11,40 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\OpenApi\Model\Operation;
 use App\Dto\Page\TabPostInput;
+use App\Dto\Page\TabPutInput;
+use App\State\Page\TabPostProcessor;
+use App\State\Page\TabPutProcessor;
+use App\Entity\Page\Tab as TabEntity;
+use Symfony\Component\ObjectMapper\Attribute\Map;
 use ApiPlatform\Doctrine\Orm\State\Options;
+use App\Enum\TabTypeEnum;
+use ApiPlatform\Metadata\ApiProperty;
 
 #[ApiResource(
     shortName: 'Tab',
-    stateOptions: new Options(entityClass: TabEntity::class),
     openapi: new Operation(tags: ['Tab']),
+    stateOptions: new Options(entityClass: TabEntity::class),
     operations: [
         new Post(
             uriTemplate: '/tab',
-            input: TabPostInput::class,
             name: 'api_tab_post',
+            processor: TabPostProcessor::class,
+            input: TabPostInput::class,
+            //output: TabEntity::class,
         ),
         new GetCollection(
             uriTemplate: '/tabs',
-            output: false,
             name: 'api_tab_collection',
         ),
         new Get(
             uriTemplate: '/tab/{id}',
-            output: false,
             name: 'api_tab_get',
         ),
         new Put(
             uriTemplate: '/tab/{id}',
             name: 'api_tab_put',
+            processor: TabPutProcessor::class,
+            input: TabPutInput::class,
         ),
         new Patch(
             uriTemplate: '/tab/{id}',
@@ -48,7 +56,25 @@ use ApiPlatform\Doctrine\Orm\State\Options;
         ),
     ]
 )]
+
+#[Map(source: TabEntity::class)]
 final class Tab
 {
+    #[ApiProperty(identifier: true)]
+    public ?int $id = null;
 
+    #[ApiProperty(readable: false, writable: true)]
+    public ?string $iri = null;
+
+    public ?string $name = null;
+
+    public ?string $nameDefault = null;
+
+    public ?string $route = null;
+
+    public ?int $position = null;
+
+    public ?TabEntity $parent = null;
+
+    public ?TabTypeEnum $type = null;
 }
