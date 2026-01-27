@@ -2,7 +2,7 @@
 
 namespace App\Entity\Page;
 
-use App\Enum\MenuEnum;
+use App\Enum\TabTypeEnum;
 use App\Repository\Page\TabRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -40,8 +40,8 @@ class Tab
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
-    #[ORM\Column(enumType: MenuEnum::class)]
-    private ?MenuEnum $menu = null;
+    #[ORM\Column(enumType: TabTypeEnum::class, nullable: true)]
+    private ?TabTypeEnum $type = null;
 
     /**
      * @var Collection<int, TabPermission>
@@ -150,14 +150,14 @@ class Tab
         return $this;
     }
 
-    public function getMenu(): ?MenuEnum
+    public function getType(): ?TabTypeEnum
     {
-        return $this->menu;
+        return $this->type;
     }
 
-    public function setMenu(MenuEnum $menu): static
+    public function setType(TabTypeEnum $type): static
     {
-        $this->menu = $menu;
+        $this->type = $type;
 
         return $this;
     }
