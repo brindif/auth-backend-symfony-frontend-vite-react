@@ -3,7 +3,9 @@ namespace App\Dto\Page;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Page\TabExists;
+use App\Validator\Page\PermissionsFormat;
 use ApiPlatform\Metadata\ApiProperty;
+use App\Enum\PermissionEnum;
 use App\Enum\TabTypeEnum;
 
 final class TabPutInput
@@ -47,4 +49,37 @@ final class TabPutInput
         TabTypeEnum::TREE
     ], message: 'tab.error.type.invalid')]
     public ?TabTypeEnum $type = null;
+
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'array',
+            'example' => '[{user: "/user/1", permission: "read"}, {user: "/user/2", permission: "manage"}]',
+            'format' => 'join-list',
+            'description' => 'User permission for this tab.',
+            'x-join' => [
+                'required' => ['user', 'permission'],
+                'properties' => [
+                    'user' => [
+                        'format' => 'iri-reference',
+                        'x-list' => [
+                            'route' => '/users',
+                            'label' => 'email',
+                            'identifier' => '@id',
+                            'labelDefault' => 'name',
+                        ],
+                    ],
+                    'permission' => [
+                        'enum' => [
+                            PermissionEnum::READ->value,
+                            PermissionEnum::WRITE->value,
+                            PermissionEnum::MANAGE->value
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    )]
+    #[PermissionsFormat]
+    #[Assert\Type(type: 'array', message: 'tab.error.permissions.type')]
+    public ?string $permissions = null;
 }
