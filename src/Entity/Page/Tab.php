@@ -57,9 +57,9 @@ class Tab
     private ?TabTypeEnum $type = null;
 
     /**
-     * @var Collection<int, TabPermission>
+     * @var Collection<int, Permission>
      */
-    #[ORM\OneToMany(targetEntity: TabPermission::class, mappedBy: 'tab')]
+    #[ORM\OneToMany(targetEntity: Permission::class, mappedBy: 'tab')]
     private Collection $permissions;
 
     public function __construct()
@@ -176,14 +176,14 @@ class Tab
     }
 
     /**
-     * @return Collection<int, TabPermission>
+     * @return Collection<int, Permission>
      */
-    public function getTabPermissions(): Collection
+    public function getPermissions(): Collection
     {
         return $this->permissions;
     }
 
-    public function addTabPermission(TabPermission $permission): static
+    public function addPermission(Permission $permission): static
     {
         if (!$this->permissions->contains($permission)) {
             $this->permissions->add($permission);
@@ -193,7 +193,7 @@ class Tab
         return $this;
     }
 
-    public function removeTabPermission(TabPermission $permission): static
+    public function removePermission(Permission $permission): static
     {
         if ($this->permissions->removeElement($permission)) {
             // set the owning side to null (unless already changed)

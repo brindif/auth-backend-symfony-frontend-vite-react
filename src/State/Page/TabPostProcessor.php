@@ -8,11 +8,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Page\Tab as TabEntity;
 use App\ApiResource\Page\Tab as TabResource;
+use App\Entity\Page\Permission;
+use App\Enum\PermissionEnum;
 use Symfony\Component\ObjectMapper\ObjectMapperInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final class TabPostProcessor implements ProcessorInterface
 {
     public function __construct(
+        private Security $security,
         private EntityManagerInterface $em,
         private IriConverterInterface $iriConverter,
         private ObjectMapperInterface $objectMapper,
@@ -25,6 +29,11 @@ final class TabPostProcessor implements ProcessorInterface
         array $context = []): TabResource
     {
         \assert($data instanceof TabPostInput);
+
+        $user = $this->security->getUser();
+        if(!$user) {
+            throw new \InvalidArgumentException('tab.error.user.not_found');
+        }
 
         $parentEntity = null;
         if ($data->parent){
@@ -46,8 +55,17 @@ final class TabPostProcessor implements ProcessorInterface
         $this->em->persist($tab);
         $this->em->flush();
 
+        $permission = new Permission();
+        $permission->setUser($user);
+        $permission->setTab($tab);
+        $permission->setPermission(PermissionEnum::MANAGE);
+
+        $this->em->persist($permission);
+        $this->em->flush();
+
         $output = $this->objectMapper->map($tab, TabResource::class);
         $output->iri = $this->iriConverter->getIriFromResource($tab->getId());
+        $output->permission = PermissionEnum::MANAGE;
 
         return $output;
     }

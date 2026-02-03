@@ -2,7 +2,7 @@
 
 namespace App\Entity\Auth;
 
-use App\Entity\Page\TabPermission;
+use App\Entity\Page\Permission;
 use App\Repository\Auth\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -47,14 +47,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $isVerified = false;
 
     /**
-     * @var Collection<int, TabPermission>
+     * @var Collection<int, Permission>
      */
-    #[ORM\OneToMany(targetEntity: TabPermission::class, mappedBy: 'allowedUser')]
-    private Collection $tabPermissions;
+    #[ORM\OneToMany(targetEntity: Permission::class, mappedBy: 'user')]
+    private Collection $permissions;
 
     public function __construct()
     {
-        $this->tabPermissions = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -157,29 +157,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, TabPermission>
+     * @return Collection<int, Permission>
      */
-    public function getTabPermissions(): Collection
+    public function getPermissions(): Collection
     {
-        return $this->tabPermissions;
+        return $this->permissions;
     }
 
-    public function addTabPermission(TabPermission $tabPermission): static
+    public function addPermission(Permission $permission): static
     {
-        if (!$this->tabPermissions->contains($tabPermission)) {
-            $this->tabPermissions->add($tabPermission);
-            $tabPermission->setAllowedUser($this);
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions->add($permission);
+            $permission->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeTabPermission(TabPermission $tabPermission): static
+    public function removePermission(Permission $permission): static
     {
-        if ($this->tabPermissions->removeElement($tabPermission)) {
+        if ($this->permissions->removeElement($permission)) {
             // set the owning side to null (unless already changed)
-            if ($tabPermission->getAllowedUser() === $this) {
-                $tabPermission->setAllowedUser(null);
+            if ($permission->getUser() === $this) {
+                $permission->setUser(null);
             }
         }
 

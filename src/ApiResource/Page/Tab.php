@@ -18,6 +18,7 @@ use App\Entity\Page\Tab as TabEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use ApiPlatform\Doctrine\Orm\State\Options;
 use App\Enum\TabTypeEnum;
+use App\Enum\PermissionEnum;
 use ApiPlatform\Metadata\ApiProperty;
 
 #[ApiResource(
@@ -30,7 +31,6 @@ use ApiPlatform\Metadata\ApiProperty;
             name: 'api_tab_post',
             processor: TabPostProcessor::class,
             input: TabPostInput::class,
-            //output: TabEntity::class,
         ),
         new GetCollection(
             uriTemplate: '/tabs',
@@ -45,14 +45,17 @@ use ApiPlatform\Metadata\ApiProperty;
             name: 'api_tab_put',
             processor: TabPutProcessor::class,
             input: TabPutInput::class,
+            security: "is_granted('manage', object)"
         ),
         new Patch(
             uriTemplate: '/tab/{id}',
             name: 'api_tab_patch',
+            security: "is_granted('manage', object)"
         ),
         new Delete(
             uriTemplate: '/tab/{id}',
             name: 'api_tab_delete',
+            security: "is_granted('manage', object)"
         ),
     ]
 )]
@@ -77,4 +80,6 @@ final class Tab
     public ?TabEntity $parent = null;
 
     public ?TabTypeEnum $type = null;
+
+    public ?PermissionEnum $permission = null;
 }

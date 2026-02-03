@@ -7,17 +7,30 @@ use App\Dto\Page\TabPutInput;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Page\Tab as TabEntity;
+use App\Repository\Page\PermissionRepository;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\ObjectMapper\ObjectMapperInterface;
+use App\ApiResource\Page\Tab as TabResource;
+use App\Enum\PermissionEnum;
 
 final class TabPutProcessor implements ProcessorInterface
 {
     public function __construct(
+        private Security $security,
         private EntityManagerInterface $em,
-        private IriConverterInterface $iriConverter
+        private IriConverterInterface $iriConverter,
+        private PermissionRepository $permissionRepository,
+        private ObjectMapperInterface $objectMapper,
     ) {}
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TabResource
     {
         \assert($data instanceof TabPutInput);
+
+        $user = $this->security->getUser();
+        if(!$user) {
+            throw new \InvalidArgumentException('tab.error.user.not_found');
+        }
 
         $tab = $this->em->find(TabEntity::class, $uriVariables['id']);
         if (!$tab) {
@@ -43,6 +56,9 @@ final class TabPutProcessor implements ProcessorInterface
         $this->em->persist($tab);
         $this->em->flush();
 
-        return $tab;
+        $output = $this->objectMapper->map($tab, TabResource::class);
+        $output->permission = PermissionEnum::MANAGE;
+
+        return $output;
     }
 }
