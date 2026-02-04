@@ -82,4 +82,6 @@ final class Tab
     public ?TabTypeEnum $type = null;
 
     public ?PermissionEnum $permission = null;
+
+    public ?iterable $permissions = [];
 }

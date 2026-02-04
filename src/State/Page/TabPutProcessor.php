@@ -7,7 +7,6 @@ use App\Dto\Page\TabPutInput;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Page\Tab as TabEntity;
-use App\Repository\Page\PermissionRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\ObjectMapper\ObjectMapperInterface;
 use App\ApiResource\Page\Tab as TabResource;
@@ -19,7 +18,6 @@ final class TabPutProcessor implements ProcessorInterface
         private Security $security,
         private EntityManagerInterface $em,
         private IriConverterInterface $iriConverter,
-        private PermissionRepository $permissionRepository,
         private ObjectMapperInterface $objectMapper,
     ) {}
 

@@ -3,7 +3,8 @@
 namespace App\Repository\Page;
 
 use App\Entity\Auth\User;
-use App\Entity\Page\Tab;
+use App\Entity\Page\Tab as TabEntity;
+use App\ApiResource\Page\Tab as  TabResouce;
 use App\Entity\Page\Permission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,7 +20,19 @@ class PermissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Permission::class);
     }
 
-    public function findOneForUserAndTab(Tab $tab, User $user): ?Permission
+    public function findOneForUserAndTabId(int $tabId, User $user): ?Permission
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.tab', 't')
+            ->andWhere('p.user = :user')
+            ->andWhere('t.id = :tabId')
+            ->setParameter('user', $user)
+            ->setParameter('tabId', $tabId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findOneForUserAndTab(TabEntity $tab, User $user): ?Permission
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.tab = :tab')
