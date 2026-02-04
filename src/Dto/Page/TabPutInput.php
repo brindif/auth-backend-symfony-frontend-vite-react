@@ -81,5 +81,5 @@ final class TabPutInput
     )]
     #[PermissionsFormat]
     #[Assert\Type(type: 'array', message: 'tab.error.permissions.type')]
-    public ?string $permissions = null;
+    public ?array $permissions = null;
 }

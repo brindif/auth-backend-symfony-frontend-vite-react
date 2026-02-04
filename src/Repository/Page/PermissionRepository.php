@@ -43,6 +43,17 @@ class PermissionRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+    
+    public function findByTab(TabEntity $tab, User $user): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.tab = :tab')
+            ->setParameter('tab', $tab)
+            ->andWhere('p.user != :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 
     //    /**
     //     * @return Permission[] Returns an array of Permission objects

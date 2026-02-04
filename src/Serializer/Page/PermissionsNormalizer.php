@@ -46,12 +46,11 @@ final class PermissionsNormalizer implements NormalizerInterface, NormalizerAwar
       $permission = $this->permissionRepository->findOneForUserAndTabId($data->id, $currentUser);
       $data->permission = $permission?->getPermission();
     }
-
     // Filter users permissions when current user can manage and without current user permission
-    if (null !== $currentUser && is_array($data->permissions) && $data->permission === PermissionEnum::MANAGE) {
+    if (null !== $currentUser && $data->permission === PermissionEnum::MANAGE) {
       $permissions = [];
       foreach($data->permissions as $permission) {
-        if ($permission->getUser() && $permission->getUser()->getId() === $currentUser->getId()) {
+        if ($permission->getUser() && $permission->getUser()->getId() !== $currentUser->getId()) {
           $permissions[] = [
             'user' => $this->iriConverter->getIriFromResource($permission->getUser()),
             'permission' => $permission->getPermission()?->value,

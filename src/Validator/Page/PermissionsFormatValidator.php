@@ -26,24 +26,24 @@ class PermissionsFormatValidator extends ConstraintValidator
             return;
         }
 
-        try {
-            foreach ($value as $permission) {
-                if (!is_string($permission['user']) || !is_string($permission['permission'])) {
-                    $this->context->buildViolation($constraint->message)->addViolation();
-                    return;
-                }
-                if (!in_array($permission['permission'], [
-                    PermissionEnum::READ->value,
-                    PermissionEnum::WRITE->value,
-                    PermissionEnum::MANAGE->value,
-                ])) {
-                    $this->context->buildViolation($constraint->message)->addViolation();
-                    return;
-                }
-                $this->iriConverter->getResourceFromIri($permission);
+        foreach ($value as $permission) {
+            if (!is_string($permission['user']) || !is_string($permission['permission'])) {
+                $this->context->buildViolation($constraint->message)->addViolation();
+                return;
             }
-        } catch (\Throwable $e) {
-            $this->context->buildViolation($constraint->message)->addViolation();
+            if (!in_array($permission['permission'], [
+                PermissionEnum::READ->value,
+                PermissionEnum::WRITE->value,
+                PermissionEnum::MANAGE->value,
+            ])) {
+                $this->context->buildViolation($constraint->message)->addViolation();
+                return;
+            }
+            try {
+                $this->iriConverter->getResourceFromIri($permission['user']);
+            } catch (\Throwable $e) {
+                $this->context->buildViolation($constraint->message)->addViolation();
+            }
         }
     }
 }

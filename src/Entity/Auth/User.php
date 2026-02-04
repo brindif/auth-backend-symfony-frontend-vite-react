@@ -13,6 +13,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Trait\AuditableTrait;
 use App\Enum\RoleEnum;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+
+#[ApiResource(
+    shortName: 'User',
+    operations: [
+        new Get(
+            uriTemplate: '/user/{id}',
+            security: "false",
+            openapi: false
+        ),
+    ]
+)]
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]

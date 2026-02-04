@@ -10,7 +10,11 @@ use App\Entity\Page\Tab as TabEntity;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\ObjectMapper\ObjectMapperInterface;
 use App\ApiResource\Page\Tab as TabResource;
+use App\Repository\Page\PermissionRepository;
+use App\Repository\Auth\UserRepository;
 use App\Enum\PermissionEnum;
+use App\Entity\Page\Permission;
+use App\Entity\Auth\User;
 
 final class TabPutProcessor implements ProcessorInterface
 {
@@ -19,6 +23,8 @@ final class TabPutProcessor implements ProcessorInterface
         private EntityManagerInterface $em,
         private IriConverterInterface $iriConverter,
         private ObjectMapperInterface $objectMapper,
+        private PermissionRepository $permissionRepository,
+        private UserRepository $userRepository,
     ) {}
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TabResource
@@ -26,7 +32,7 @@ final class TabPutProcessor implements ProcessorInterface
         \assert($data instanceof TabPutInput);
 
         $user = $this->security->getUser();
-        if(!$user) {
+        if(!$user || !$user instanceof User) {
             throw new \InvalidArgumentException('tab.error.user.not_found');
         }
 
@@ -50,6 +56,37 @@ final class TabPutProcessor implements ProcessorInterface
         if($data->position) $tab->setPosition($data->position);
         if($data->type) $tab->setType($data->type);
         $tab->setParent($parentEntity);
+        
+        // Manage permissions
+        if(is_array($data->permissions)) {
+            $oldPermission = $this->permissionRepository->findByTab($tab, $user);
+            $old = [];
+            foreach($oldPermission as $permission) {
+                $old[$permission->getUser()->getId()] = $permission;
+            }
+            foreach($data->permissions as $permission) {
+                $userId = (int) substr(parse_url($permission['user'], PHP_URL_PATH), strrpos($permission['user'], '/') + 1);
+                $user = $this->userRepository->find($userId);
+                // Create permission
+                if($user  && !isset($old[$user->getId()])) {
+                    $add = new Permission();
+                    $add->setUser($user);
+                    $add->setPermission(PermissionEnum::from($permission['permission']));
+                    $add->setTab($tab);
+                    $this->em->persist($add);
+                }
+                // Update permission
+                elseif($user  && $old[$user->getId()]->getPermission()->value !== $permission['permission']) {
+                    $old[$user->getId()]->setPermission(PermissionEnum::from($permission['permission']));
+                    $this->em->persist($old[$user->getId()]);
+                }
+                unset($old[$user->getId()]);
+            }
+            // Delete permission
+            foreach($old as $permission) {
+                $this->em->remove($permission);
+            }
+        }
 
         $this->em->persist($tab);
         $this->em->flush();
