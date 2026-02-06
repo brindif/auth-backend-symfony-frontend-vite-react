@@ -3,7 +3,8 @@
 namespace App\Security\Voter\Page;
 
 use App\Dto\Page\TabPutInput;
-use App\Entity\Page\Tab;
+use App\Entity\Page\Tab as TabEntity;
+use App\ApiResource\Page\Tab as TabResource;
 use App\Entity\Auth\User;
 use App\Repository\Page\PermissionRepository;
 use App\Enum\PermissionEnum;
@@ -19,7 +20,11 @@ final class TabVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!$subject instanceof Tab && !$subject instanceof TabPutInput) {
+        if (
+            !$subject instanceof TabEntity &&
+            !$subject instanceof TabPutInput &&
+            !$subject instanceof TabResource
+        ) {
             return false;
         }
 
@@ -28,14 +33,18 @@ final class TabVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        $tab = $subject;
+        if ($subject instanceof TabEntity) {
+            $tabId = $subject->getId();
+        } else {
+            $tabId = $subject->id;
+        }
 
         $user = $token->getUser();
         if (!$user instanceof User) {
             return false;
         }
 
-        $permission = $this->permissionRepository->findOneForUserAndTab($tab, $user);
+        $permission = $this->permissionRepository->findOneForUserAndTabId($tabId, $user);
         if (null === $permission) {
             return false;
         }

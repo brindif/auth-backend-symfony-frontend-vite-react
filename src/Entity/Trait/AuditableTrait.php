@@ -15,17 +15,16 @@ trait AuditableTrait
     use BlameableEntity;       // createdBy, updatedBy
     use SoftDeleteableEntity;  // deletedAt
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'deleted_by', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[ORM\Column(type: 'string', length: 180, nullable: true)]
     #[Gedmo\Blameable(on: 'change', field: 'deletedAt')]
-    private ?User $deletedBy = null;
+    private ?string $deletedBy = null;
 
-    public function getDeletedBy(): ?User
+    public function getDeletedBy(): ?string
     {
         return $this->deletedBy;
     }
 
-    public function setDeletedBy(?User $deletedBy): self
+    public function setDeletedBy(?string $deletedBy): self
     {
         $this->deletedBy = $deletedBy;
         return $this;

@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Trait\AuditableTrait;
 use App\Enum\RoleEnum;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
@@ -31,6 +32,7 @@ use ApiPlatform\Metadata\Get;
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'register.error.email.exists')]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use AuditableTrait;

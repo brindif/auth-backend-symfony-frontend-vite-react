@@ -14,6 +14,7 @@ use App\Dto\Page\TabPostInput;
 use App\Dto\Page\TabPutInput;
 use App\State\Page\TabPostProcessor;
 use App\State\Page\TabPutProcessor;
+use App\State\Page\TabDeleteProcessor;
 use App\Entity\Page\Tab as TabEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use ApiPlatform\Doctrine\Orm\State\Options;
@@ -55,7 +56,9 @@ use ApiPlatform\Metadata\ApiProperty;
         new Delete(
             uriTemplate: '/tab/{id}',
             name: 'api_tab_delete',
-            security: "is_granted('manage', object)"
+            read: false,
+            output: false,
+            processor: TabDeleteProcessor::class,
         ),
     ]
 )]
