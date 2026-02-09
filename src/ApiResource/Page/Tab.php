@@ -18,7 +18,6 @@ use App\State\Page\TabDeleteProcessor;
 use App\Entity\Page\Tab as TabEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use ApiPlatform\Doctrine\Orm\State\Options;
-use App\Enum\TabTypeEnum;
 use App\Enum\PermissionEnum;
 use ApiPlatform\Metadata\ApiProperty;
 
@@ -81,8 +80,6 @@ final class Tab
     public ?int $position = null;
 
     public ?TabEntity $parent = null;
-
-    public ?TabTypeEnum $type = null;
 
     public ?PermissionEnum $permission = null;
 

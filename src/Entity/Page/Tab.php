@@ -2,7 +2,6 @@
 
 namespace App\Entity\Page;
 
-use App\Enum\TabTypeEnum;
 use App\Repository\Page\TabRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -55,19 +54,23 @@ class Tab
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
-    #[ORM\Column(enumType: TabTypeEnum::class, nullable: true)]
-    private ?TabTypeEnum $type = null;
-
     /**
      * @var Collection<int, Permission>
      */
     #[ORM\OneToMany(targetEntity: Permission::class, mappedBy: 'tab')]
     private Collection $permissions;
 
+    /**
+     * @var Collection<int, Note>
+     */
+    #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'tab')]
+    private Collection $notes;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
         $this->permissions = new ArrayCollection();
+        $this->notes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -165,18 +168,6 @@ class Tab
         return $this;
     }
 
-    public function getType(): ?TabTypeEnum
-    {
-        return $this->type;
-    }
-
-    public function setType(TabTypeEnum $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Permission>
      */
@@ -201,6 +192,36 @@ class Tab
             // set the owning side to null (unless already changed)
             if ($permission->getTab() === $this) {
                 $permission->setTab(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): static
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes->add($note);
+            $note->setTab($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): static
+    {
+        if ($this->notes->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getTab() === $this) {
+                $note->setTab(null);
             }
         }
 

@@ -1,18 +1,18 @@
 <?php
-namespace App\State\Page;
+namespace App\State\Note;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use App\ApiResource\Page\Tab as TabResource;
+use App\ApiResource\Page\Note as NoteResource;
 use App\Entity\Auth\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Page\Tab as TabEntity;
+use App\Entity\Page\Note as NoteEntity;
 
-final class TabDeleteProcessor implements ProcessorInterface
+final class NoteDeleteProcessor implements ProcessorInterface
 {
     public function __construct(
         private Security $security,
@@ -21,23 +21,23 @@ final class TabDeleteProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        \assert($data instanceof TabResource);
+        \assert($data instanceof NoteResource);
 
         $user = $this->security->getUser();
         if(!$user || !$user instanceof User) {
-            throw new InvalidArgumentException('tab.error.user.not_found');
+            throw new InvalidArgumentException('note.error.user.not_found');
         }
 
-        $tab = $this->em->find(TabEntity::class, $uriVariables['id']);
-        if (!$tab) {
-            throw new NotFoundHttpException('tab.error.not_found');
+        $note = $this->em->find(NoteEntity::class, $uriVariables['id']);
+        if (!$note) {
+            throw new NotFoundHttpException('note.error.not_found');
         }
-        if(! $this->security->isGranted('manage', $tab)) {
-            throw new AccessDeniedException('tab.error.access');
+        if(! $this->security->isGranted('manage', $note)) {
+            throw new AccessDeniedException('note.error.access');
         }
 
-        $tab->setDeletedAt(new \DateTime());
-        $this->em->persist($tab);
+        $note->setDeletedAt(new \DateTime());
+        $this->em->persist($note);
         $this->em->flush();
     }
 }

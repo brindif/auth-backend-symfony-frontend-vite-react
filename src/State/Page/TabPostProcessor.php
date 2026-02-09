@@ -49,7 +49,6 @@ final class TabPostProcessor implements ProcessorInterface
         if($data->nameDefault) $tab->setNameDefault($data->nameDefault);
         $tab->setRoute($data->route);
         if($data->position) $tab->setPosition($data->position);
-        if($data->type) $tab->setType($data->type);
         $tab->setParent($parentEntity);
 
         $this->em->persist($tab);

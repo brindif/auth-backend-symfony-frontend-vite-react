@@ -25,9 +25,22 @@ class PermissionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->innerJoin('p.tab', 't')
             ->andWhere('p.user = :user')
-            ->andWhere('t.id = :tabId')
             ->setParameter('user', $user)
+            ->andWhere('t.id = :tabId')
             ->setParameter('tabId', $tabId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findOneForUserAndNoteId(int $noteId, User $user): ?Permission
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.tab', 't')
+            ->andWhere('p.user = :user')
+            ->setParameter('user', $user)
+            ->innerJoin('t.notes', 'n')
+            ->andWhere('n.id = :noteId')
+            ->setParameter('noteId', $noteId)
             ->getQuery()
             ->getOneOrNullResult();
     }

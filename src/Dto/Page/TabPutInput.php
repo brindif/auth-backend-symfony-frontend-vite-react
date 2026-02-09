@@ -6,7 +6,6 @@ use App\Validator\Page\TabExists;
 use App\Validator\Page\PermissionsFormat;
 use ApiPlatform\Metadata\ApiProperty;
 use App\Enum\PermissionEnum;
-use App\Enum\TabTypeEnum;
 
 final class TabPutInput
 {
@@ -42,13 +41,6 @@ final class TabPutInput
     #[Assert\Type(type: 'string', message: 'tab.error.parent.type')]
     #[TabExists]
     public ?string $parent = null;
-
-    #[Assert\Choice(choices: [
-        TabTypeEnum::NOTES,
-        TabTypeEnum::CALENDAR,
-        TabTypeEnum::TREE
-    ], message: 'tab.error.type.invalid')]
-    public ?TabTypeEnum $type = null;
 
     #[ApiProperty(
         openapiContext: [

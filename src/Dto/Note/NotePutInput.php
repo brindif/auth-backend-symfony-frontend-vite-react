@@ -1,24 +1,20 @@
 <?php
-namespace App\Dto\Page;
+namespace App\Dto\Note;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Page\TabExists;
 use ApiPlatform\Metadata\ApiProperty;
 
-final class TabPostInput
+final class NotePutInput
 {
-    #[Assert\Length(max: 50, maxMessage: 'tab.error.name.length')]
-    #[Assert\NotBlank(message: 'tab.error.name.empty')]
+    #[Assert\Length(max: 50, maxMessage: 'note.error.name.length')]
+    #[Assert\NotBlank(message: 'note.error.name.empty')]
     public ?string $name = null;
     
-    #[Assert\Length(max: 50, maxMessage: 'tab.error.name.default.length')]
+    #[Assert\Length(max: 50, maxMessage: 'note.error.name.default.length')]
     public ?string $nameDefault = null;
 
-    #[Assert\NotBlank(message: 'tab.error.route.empty')]
-    #[Assert\Length(max: 50, maxMessage: 'tab.error.route.length')]
-    public ?string $route = null;
-
-    #[Assert\PositiveOrZero(message: 'tab.error.position.nan')]
+    #[Assert\PositiveOrZero(message: 'note.error.position.nan')]
     public ?int $position = null;
 
     #[ApiProperty(
@@ -27,7 +23,7 @@ final class TabPostInput
             'example' => '/tab/123',
             'format' => 'iri-reference',
             'pattern' => "^/tab/\\d+$",
-            'description' => 'The IRI of the parent tab. Must be a valid tab IRI or null.',
+            'description' => 'The IRI of the parent note. Must be a valid note IRI or null.',
             'x-list' => [
                 'route' => '/tabs',
                 'label' => 'name',
@@ -36,7 +32,7 @@ final class TabPostInput
             ],
         ],
     )]
-    #[Assert\Type(type: 'string', message: 'tab.error.parent.type')]
+    #[Assert\Type(type: 'string', message: 'note.error.tab.type')]
     #[TabExists]
-    public ?string $parent = null;
+    public ?string $tab = null;
 }
