@@ -82,7 +82,7 @@ final class Note
 
     public ?string $nameDefault = null;
 
-    public ?string $position = null;
+    public ?int $position = null;
 
     public ?TabEntity $tab = null;
 
