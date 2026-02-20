@@ -14,6 +14,10 @@ use App\Entity\Auth\User as UserEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use ApiPlatform\Doctrine\Orm\State\Options;
 use ApiPlatform\Metadata\ApiProperty;
+use DateTimeInterface;
+use App\Dto\Auth\UserPutInput;
+use App\State\Auth\UserPutProcessor;
+use App\State\Auth\UserDeleteProcessor;
 
 #[ApiResource(
     shortName: 'User',
@@ -36,6 +40,8 @@ use ApiPlatform\Metadata\ApiProperty;
         new Put(
             uriTemplate: '/user/{id}',
             name: 'api_user_put',
+            processor: UserPutProcessor::class,
+            input: UserPutInput::class,
             security: "is_granted('ROLE_ADMIN', object)"
         ),
         new Patch(
@@ -46,7 +52,9 @@ use ApiPlatform\Metadata\ApiProperty;
         new Delete(
             uriTemplate: '/user/{id}',
             name: 'api_user_delete',
-            security: "is_granted('ROLE_ADMIN', object)"
+            read: false,
+            output: false,
+            processor: UserDeleteProcessor::class,
         ),
     ]
 )]
@@ -64,7 +72,18 @@ final class User
 
     public ?string $email = null;
 
-    private ?array $roles = null;
+    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+    public ?array $roles = null;
 
-    private bool $isVerified = false;
+    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+    public bool $isVerified = false;
+
+    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+    public ?DateTimeInterface $createdAt = null;
+
+    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+    public ?DateTimeInterface $updatedAt = null;
+
+    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+    public ?string $updatedBy = null;
 }
