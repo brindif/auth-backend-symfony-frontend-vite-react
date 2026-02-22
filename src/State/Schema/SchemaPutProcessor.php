@@ -1,21 +1,21 @@
 <?php
-namespace App\State\Note;
+namespace App\State\Schema;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Dto\Note\NotePutInput;
+use App\Dto\Schema\SchemaPutInput;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Page\Tab as TabEntity;
-use App\Entity\Content\Note as NoteEntity;
+use App\Entity\Content\Schema as SchemaEntity;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\ObjectMapper\ObjectMapperInterface;
-use App\ApiResource\Content\Note as NoteResource;
+use App\ApiResource\Content\Schema as SchemaResource;
 use App\Repository\Page\PermissionRepository;
 use App\Repository\Auth\UserRepository;
 use App\Entity\Auth\User;
 
-final class NotePutProcessor implements ProcessorInterface
+final class SchemaPutProcessor implements ProcessorInterface
 {
     public function __construct(
         private Security $security,
@@ -26,18 +26,18 @@ final class NotePutProcessor implements ProcessorInterface
         private UserRepository $userRepository,
     ) {}
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): NoteResource
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): SchemaResource
     {
-        \assert($data instanceof NotePutInput);
+        \assert($data instanceof SchemaPutInput);
 
         $user = $this->security->getUser();
         if(!$user || !$user instanceof User) {
-            throw new \InvalidArgumentException('note.error.user.not_found');
+            throw new \InvalidArgumentException('schema.error.user.not_found');
         }
 
-        $note = $this->em->find(NoteEntity::class, $uriVariables['id']);
-        if (!$note) {
-            throw new \InvalidArgumentException('note.error.not_found');
+        $schema = $this->em->find(SchemaEntity::class, $uriVariables['id']);
+        if (!$schema) {
+            throw new \InvalidArgumentException('schema.error.not_found');
         }
 
         $tabEntity = null;
@@ -45,19 +45,18 @@ final class NotePutProcessor implements ProcessorInterface
             $tabResource = $this->iriConverter->getResourceFromIri($data->tab);
             $tabEntity = $this->em->getRepository(TabEntity::class)->find($tabResource->id);
             if (!$tabEntity) {
-                throw new \InvalidArgumentException('note.error.tab.not_found');
+                throw new \InvalidArgumentException('schema.error.tab.not_found');
             }
         }
 
-        $note->setName($data->name);
-        if($data->nameDefault) $note->setNameDefault($data->nameDefault);
-        if($data->position) $note->setPosition($data->position);
-        $note->setTab($tabEntity);
+        $schema->setName($data->name);
+        if($data->nameDefault) $schema->setNameDefault($data->nameDefault);
+        //$schema->setTab($tabEntity);
 
-        $this->em->persist($note);
+        $this->em->persist($schema);
         $this->em->flush();
 
-        $output = $this->objectMapper->map($note, NoteResource::class);
+        $output = $this->objectMapper->map($schema, SchemaResource::class);
 
         return $output;
     }

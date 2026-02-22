@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Entity\Page;
+namespace App\Entity\Content;
 
-use App\Repository\Page\NoteRepository;
+use App\Repository\Content\NoteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Trait\AuditableTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\Page\Tab;
 
 #[ORM\Entity(repositoryClass: NoteRepository::class)]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
@@ -34,6 +35,12 @@ class Note
 
     #[ORM\Column(nullable: true)]
     private ?int $position = null;
+
+    #[ORM\ManyToOne(inversedBy: 'notes')]
+    private ?Schema $schema = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $date = null;
 
     public function getId(): ?int
     {
@@ -96,6 +103,30 @@ class Note
     public function setPosition(?int $position): static
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    public function getSchema(): ?Schema
+    {
+        return $this->schema;
+    }
+
+    public function setSchema(?Schema $schema): static
+    {
+        $this->schema = $schema;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTime
+    {
+        return $this->date;
+    }
+
+    public function setDate(?\DateTime $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }

@@ -1,18 +1,18 @@
 <?php
-namespace App\State\Note;
+namespace App\State\Schema;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Dto\Note\NotePostInput;
+use App\Dto\Schema\SchemaPostInput;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Page\Tab as TabEntity;
-use App\Entity\Content\Note as NoteEntity;
-use App\ApiResource\Content\Note as NoteResource;
+use App\Entity\Content\Schema as SchemaEntity;
+use App\ApiResource\Content\Schema as SchemaResource;
 use Symfony\Component\ObjectMapper\ObjectMapperInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
-final class NotePostProcessor implements ProcessorInterface
+final class SchemaPostProcessor implements ProcessorInterface
 {
     public function __construct(
         private Security $security,
@@ -25,13 +25,13 @@ final class NotePostProcessor implements ProcessorInterface
         mixed $data,
         Operation $operation,
         array $uriVariables = [],
-        array $context = []): NoteResource
+        array $context = []): SchemaResource
     {
-        \assert($data instanceof NotePostInput);
+        \assert($data instanceof SchemaPostInput);
 
         $user = $this->security->getUser();
         if(!$user) {
-            throw new \InvalidArgumentException('note.error.user.not_found');
+            throw new \InvalidArgumentException('schema.error.user.not_found');
         }
 
         $tabEntity = null;
@@ -39,21 +39,20 @@ final class NotePostProcessor implements ProcessorInterface
             $tabResource = $this->iriConverter->getResourceFromIri($data->tab);
             $tabEntity = $this->em->getRepository(TabEntity::class)->find($tabResource->id);
             if (!$tabEntity) {
-                throw new \InvalidArgumentException('note.error.tab.not_found');
+                throw new \InvalidArgumentException('schema.error.tab.not_found');
             }
         }
 
-        $note = new NoteEntity();
-        $note->setName($data->name);
-        if($data->nameDefault) $note->setNameDefault($data->nameDefault);
-        if($data->position) $note->setPosition($data->position);
-        $note->setTab($tabEntity);
+        $schema = new SchemaEntity();
+        $schema->setName($data->name);
+        if($data->nameDefault) $schema->setNameDefault($data->nameDefault);
+        //$schema->setTab($tabEntity);
 
-        $this->em->persist($note);
+        $this->em->persist($schema);
         $this->em->flush();
 
-        $output = $this->objectMapper->map($note, NoteResource::class);
-        $output->iri = $this->iriConverter->getIriFromResource($note->getId());
+        $output = $this->objectMapper->map($schema, SchemaResource::class);
+        $output->iri = $this->iriConverter->getIriFromResource($schema->getId());
 
         return $output;
     }

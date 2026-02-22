@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ApiResource\Page;
+namespace App\ApiResource\Content;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
@@ -17,13 +17,15 @@ use App\State\Note\NotePostProcessor;
 use App\State\Note\NotePutProcessor;
 use App\State\Note\NotePatchProcessor;
 use App\State\Note\NoteDeleteProcessor;
-use App\Entity\Page\Note as NoteEntity;
+use App\Entity\Content\Note as NoteEntity;
+use App\Entity\Content\Schema as SchemaEntity;
 use App\Entity\Page\Tab as TabEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use ApiPlatform\Doctrine\Orm\State\Options;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use DateTimeInterface;
 
 #[ApiResource(
     shortName: 'Note',
@@ -83,6 +85,10 @@ final class Note
     public ?string $nameDefault = null;
 
     public ?int $position = null;
+
+    public ?DateTimeInterface $date = null;
+
+    public ?SchemaEntity $schema = null;
 
     public ?TabEntity $tab = null;
 

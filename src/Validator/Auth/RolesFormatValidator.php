@@ -31,6 +31,7 @@ class RolesFormatValidator extends ConstraintValidator
                 RoleEnum::ADMIN->value,
                 RoleEnum::MANAGER->value,
                 RoleEnum::USER->value,
+                RoleEnum::GUEST->value,
             ])) {
                 $this->context->buildViolation($constraint->message)->addViolation();
                 return;

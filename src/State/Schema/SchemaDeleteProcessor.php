@@ -1,18 +1,18 @@
 <?php
-namespace App\State\Note;
+namespace App\State\Schema;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use App\ApiResource\Content\Note as NoteResource;
+use App\ApiResource\Content\Schema as SchemaResource;
 use App\Entity\Auth\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Content\Note as NoteEntity;
+use App\Entity\Content\Schema as SchemaEntity;
 
-final class NoteDeleteProcessor implements ProcessorInterface
+final class SchemaDeleteProcessor implements ProcessorInterface
 {
     public function __construct(
         private Security $security,
@@ -21,23 +21,23 @@ final class NoteDeleteProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        \assert($data instanceof NoteResource);
+        \assert($data instanceof SchemaResource);
 
         $user = $this->security->getUser();
         if(!$user || !$user instanceof User) {
-            throw new InvalidArgumentException('note.error.user.not_found');
+            throw new InvalidArgumentException('schema.error.user.not_found');
         }
 
-        $note = $this->em->find(NoteEntity::class, $uriVariables['id']);
-        if (!$note) {
-            throw new NotFoundHttpException('note.error.not_found');
+        $schema = $this->em->find(SchemaEntity::class, $uriVariables['id']);
+        if (!$schema) {
+            throw new NotFoundHttpException('schema.error.not_found');
         }
-        if(! $this->security->isGranted('manage', $note)) {
-            throw new AccessDeniedException('note.error.access');
+        if(! $this->security->isGranted('manage', $schema)) {
+            throw new AccessDeniedException('schema.error.access');
         }
 
-        $note->setDeletedAt(new \DateTime());
-        $this->em->persist($note);
+        $schema->setDeletedAt(new \DateTime());
+        $this->em->persist($schema);
         $this->em->flush();
     }
 }

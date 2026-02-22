@@ -40,11 +40,14 @@ final class UserVoter extends Voter
                 case RoleEnum::ADMIN->value :
                     if($role === RoleEnum::ADMIN->value) return true;
                     break;
+                case RoleEnum::MANAGER->value:
+                    if($role === RoleEnum::MANAGER->value) return true;
+                    break;
                 case RoleEnum::USER->value:
                     if($role === RoleEnum::USER->value) return true;
                     break;
-                case RoleEnum::MANAGER->value:
-                    if($role === RoleEnum::MANAGER->value) return true;
+                case RoleEnum::GUEST->value:
+                    if($role === RoleEnum::GUEST->value) return true;
                     break;
             };
         }

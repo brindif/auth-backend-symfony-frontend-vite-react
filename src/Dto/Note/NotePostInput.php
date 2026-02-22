@@ -4,6 +4,8 @@ namespace App\Dto\Note;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Page\TabExists;
 use ApiPlatform\Metadata\ApiProperty;
+use App\Validator\Content\SchemaExists;
+use DateTimeInterface;
 
 final class NotePostInput
 {
@@ -16,6 +18,28 @@ final class NotePostInput
 
     #[Assert\PositiveOrZero(message: 'note.error.position.nan')]
     public ?int $position = null;
+    
+    #[Assert\Type(type: 'date', message: 'note.error.date.type')]
+    public ?DateTimeInterface $date = null;
+
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'string',
+            'example' => '/schema/123',
+            'format' => 'iri-reference',
+            'pattern' => "^/schema/\\d+$",
+            'description' => 'The IRI of the schema note. Must be a valid note IRI or null.',
+            'x-list' => [
+                'route' => '/schemas',
+                'label' => 'name',
+                'identifier' => '@id',
+                'labelDefault' => 'nameDefault',
+            ],
+        ],
+    )]
+    #[Assert\Type(type: 'string', message: 'note.error.schema.type')]
+    #[SchemaExists]
+    public ?string $schema = null;
 
     #[ApiProperty(
         openapiContext: [

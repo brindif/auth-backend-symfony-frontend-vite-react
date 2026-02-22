@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Security\Voter\Page;
+namespace App\Security\Voter\Content;
 
-use App\Dto\Page\NotePutInput;
-use App\Entity\Page\Note as NoteEntity;
-use App\ApiResource\Page\Note as NoteResource;
+use App\Dto\Note\NotePutInput;
+use App\Entity\Content\Note as NoteEntity;
+use App\ApiResource\Content\Note as NoteResource;
 use App\Entity\Auth\User;
 use App\Repository\Page\PermissionRepository;
 use App\Enum\PermissionEnum;

@@ -24,11 +24,6 @@ use App\State\Auth\UserDeleteProcessor;
     openapi: new Operation(tags: ['User']),
     stateOptions: new Options(entityClass: UserEntity::class),
     operations: [
-        new Post(
-            uriTemplate: '/user',
-            name: 'api_user_post',
-            security: "is_granted('ROLE_ADMIN', object)"
-        ),
         new GetCollection(
             uriTemplate: '/users',
             name: 'api_user_collection',
@@ -42,11 +37,6 @@ use App\State\Auth\UserDeleteProcessor;
             name: 'api_user_put',
             processor: UserPutProcessor::class,
             input: UserPutInput::class,
-            security: "is_granted('ROLE_ADMIN', object)"
-        ),
-        new Patch(
-            uriTemplate: '/user/{id}',
-            name: 'api_user_patch',
             security: "is_granted('ROLE_ADMIN', object)"
         ),
         new Delete(

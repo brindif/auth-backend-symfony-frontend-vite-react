@@ -2,6 +2,8 @@
 
 namespace App\Entity\Page;
 
+use App\Entity\Content\Note;
+use App\Entity\Content\Schema;
 use App\Repository\Page\TabRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -66,11 +68,18 @@ class Tab
     #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'tab')]
     private Collection $notes;
 
+    /**
+     * @var Collection<int, Schema>
+     */
+    #[ORM\ManyToMany(targetEntity: Schema::class, mappedBy: 'tabs')]
+    private Collection $schemas;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
         $this->permissions = new ArrayCollection();
         $this->notes = new ArrayCollection();
+        $this->schemas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -223,6 +232,33 @@ class Tab
             if ($note->getTab() === $this) {
                 $note->setTab(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Schema>
+     */
+    public function getSchemas(): Collection
+    {
+        return $this->schemas;
+    }
+
+    public function addSchema(Schema $schema): static
+    {
+        if (!$this->schemas->contains($schema)) {
+            $this->schemas->add($schema);
+            $schema->addTab($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSchema(Schema $schema): static
+    {
+        if ($this->schemas->removeElement($schema)) {
+            $schema->removeTab($this);
         }
 
         return $this;
