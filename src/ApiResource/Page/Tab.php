@@ -22,66 +22,66 @@ use App\Enum\PermissionEnum;
 use ApiPlatform\Metadata\ApiProperty;
 
 #[ApiResource(
-    shortName: 'Tab',
-    openapi: new Operation(tags: ['Tab']),
-    stateOptions: new Options(entityClass: TabEntity::class),
-    operations: [
-        new Post(
-            uriTemplate: '/tab',
-            name: 'api_tab_post',
-            processor: TabPostProcessor::class,
-            input: TabPostInput::class,
-        ),
-        new GetCollection(
-            uriTemplate: '/tabs',
-            name: 'api_tab_collection',
-        ),
-        new Get(
-            uriTemplate: '/tab/{id}',
-            name: 'api_tab_get',
-        ),
-        new Put(
-            uriTemplate: '/tab/{id}',
-            name: 'api_tab_put',
-            processor: TabPutProcessor::class,
-            input: TabPutInput::class,
-            security: "is_granted('manage', object)"
-        ),
-        new Patch(
-            uriTemplate: '/tab/{id}',
-            name: 'api_tab_patch',
-            security: "is_granted('manage', object)"
-        ),
-        new Delete(
-            uriTemplate: '/tab/{id}',
-            name: 'api_tab_delete',
-            read: false,
-            output: false,
-            processor: TabDeleteProcessor::class,
-        ),
-    ]
+  shortName: 'Tab',
+  openapi: new Operation(tags: ['Tab']),
+  stateOptions: new Options(entityClass: TabEntity::class),
+  operations: [
+    new Post(
+      uriTemplate: '/tab',
+      name: 'api_tab_post',
+      processor: TabPostProcessor::class,
+      input: TabPostInput::class,
+    ),
+    new GetCollection(
+      uriTemplate: '/tabs',
+      name: 'api_tab_collection',
+    ),
+    new Get(
+      uriTemplate: '/tab/{id}',
+      name: 'api_tab_get',
+    ),
+    new Put(
+      uriTemplate: '/tab/{id}',
+      name: 'api_tab_put',
+      processor: TabPutProcessor::class,
+      input: TabPutInput::class,
+      security: "is_granted('manage', object)"
+    ),
+    new Patch(
+      uriTemplate: '/tab/{id}',
+      name: 'api_tab_patch',
+      security: "is_granted('manage', object)"
+    ),
+    new Delete(
+      uriTemplate: '/tab/{id}',
+      name: 'api_tab_delete',
+      read: false,
+      output: false,
+      processor: TabDeleteProcessor::class,
+    ),
+  ]
 )]
 
 #[Map(source: TabEntity::class)]
 final class Tab
 {
-    #[ApiProperty(identifier: true)]
-    public ?int $id = null;
+  #[ApiProperty(identifier: true)]
+  public ?int $id = null;
 
-    #[ApiProperty(readable: false, writable: true)]
-    public ?string $iri = null;
+  #[ApiProperty(readable: false, writable: true)]
+  public ?string $iri = null;
 
-    public ?string $name = null;
+  public ?string $name = null;
 
-    public ?string $nameDefault = null;
+  public ?string $nameDefault = null;
 
-    public ?string $route = null;
+  public ?string $route = null;
 
-    public ?int $position = null;
+  public ?int $position = null;
 
-    public ?TabEntity $parent = null;
+  public ?TabEntity $parent = null;
 
-    public ?PermissionEnum $permission = null;
+  public ?PermissionEnum $permission = null;
 
-    public ?iterable $permissions = [];
+  public ?iterable $permissions = [];
 }

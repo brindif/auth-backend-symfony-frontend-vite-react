@@ -15,28 +15,28 @@ use SymfonyCasts\Bundle\ResetPassword\Persistence\ResetPasswordRequestRepository
  */
 class CheckEmailRepository extends ServiceEntityRepository implements ResetPasswordRequestRepositoryInterface
 {
-    use ResetPasswordRequestRepositoryTrait;
+  use ResetPasswordRequestRepositoryTrait;
 
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, CheckEmail::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, CheckEmail::class);
+  }
 
-    /**
-     * @param User $user
-     */
-    public function createResetPasswordRequest(object $user, \DateTimeInterface $expiresAt, string $selector, string $hashedToken): ResetPasswordRequestInterface
-    {
-        return new CheckEmail($user, $expiresAt, $selector, $hashedToken);
-    }
+  /**
+   * @param User $user
+   */
+  public function createResetPasswordRequest(object $user, \DateTimeInterface $expiresAt, string $selector, string $hashedToken): ResetPasswordRequestInterface
+  {
+    return new CheckEmail($user, $expiresAt, $selector, $hashedToken);
+  }
 
-    public function findOneByToken($hashedToken): ?CheckEmail
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.hashedToken = :hashedToken')
-            ->setParameter('hashedToken', $hashedToken)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
+  public function findOneByToken($hashedToken): ?CheckEmail
+  {
+    return $this->createQueryBuilder('u')
+      ->andWhere('u.hashedToken = :hashedToken')
+      ->setParameter('hashedToken', $hashedToken)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
+  }
 }

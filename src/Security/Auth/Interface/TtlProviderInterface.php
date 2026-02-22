@@ -3,5 +3,5 @@ namespace App\Security\Auth\Interface;
 
 interface TtlProviderInterface
 {
-    public function getTtl(): int;
+  public function getTtl(): int;
 }

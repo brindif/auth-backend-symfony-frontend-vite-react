@@ -7,36 +7,36 @@ use ApiPlatform\Metadata\ApiProperty;
 
 final class TabPostInput
 {
-    #[Assert\Length(max: 50, maxMessage: 'tab.error.name.length')]
-    #[Assert\NotBlank(message: 'tab.error.name.empty')]
-    public ?string $name = null;
-    
-    #[Assert\Length(max: 50, maxMessage: 'tab.error.name.default.length')]
-    public ?string $nameDefault = null;
+  #[Assert\Length(max: 50, maxMessage: 'tab.error.name.length')]
+  #[Assert\NotBlank(message: 'tab.error.name.empty')]
+  public ?string $name = null;
+  
+  #[Assert\Length(max: 50, maxMessage: 'tab.error.name.default.length')]
+  public ?string $nameDefault = null;
 
-    #[Assert\NotBlank(message: 'tab.error.route.empty')]
-    #[Assert\Length(max: 50, maxMessage: 'tab.error.route.length')]
-    public ?string $route = null;
+  #[Assert\NotBlank(message: 'tab.error.route.empty')]
+  #[Assert\Length(max: 50, maxMessage: 'tab.error.route.length')]
+  public ?string $route = null;
 
-    #[Assert\PositiveOrZero(message: 'tab.error.position.nan')]
-    public ?int $position = null;
+  #[Assert\PositiveOrZero(message: 'tab.error.position.nan')]
+  public ?int $position = null;
 
-    #[ApiProperty(
-        openapiContext: [
-            'type' => 'string',
-            'example' => '/tab/123',
-            'format' => 'iri-reference',
-            'pattern' => "^/tab/\\d+$",
-            'description' => 'The IRI of the parent tab. Must be a valid tab IRI or null.',
-            'x-list' => [
-                'route' => '/tabs',
-                'label' => 'name',
-                'identifier' => '@id',
-                'labelDefault' => 'nameDefault',
-            ],
-        ],
-    )]
-    #[Assert\Type(type: 'string', message: 'tab.error.parent.type')]
-    #[TabExists]
-    public ?string $parent = null;
+  #[ApiProperty(
+    openapiContext: [
+      'type' => 'string',
+      'example' => '/tab/123',
+      'format' => 'iri-reference',
+      'pattern' => "^/tab/\\d+$",
+      'description' => 'The IRI of the parent tab. Must be a valid tab IRI or null.',
+      'x-list' => [
+        'route' => '/tabs',
+        'label' => 'name',
+        'identifier' => '@id',
+        'labelDefault' => 'nameDefault',
+      ],
+    ],
+  )]
+  #[Assert\Type(type: 'string', message: 'tab.error.parent.type')]
+  #[TabExists]
+  public ?string $parent = null;
 }

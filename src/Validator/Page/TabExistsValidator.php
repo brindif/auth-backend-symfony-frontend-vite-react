@@ -9,29 +9,29 @@ use ApiPlatform\Metadata\IriConverterInterface;
 
 class TabExistsValidator extends ConstraintValidator
 {
-    public function __construct(private IriConverterInterface $iriConverter) {}
+  public function __construct(private IriConverterInterface $iriConverter) {}
 
-    public function validate(mixed $value, Constraint $constraint): void
-    {
-        if (!$constraint instanceof TabExists) {
-            throw new UnexpectedTypeException($constraint, TabExists::class);
-        }
-
-        if (empty($value)) {
-            return;
-        }
-        
-        if (!is_string($value)) {
-            throw new UnexpectedValueException($value, 'string');
-        }
-
-        try {
-            $this->iriConverter->getResourceFromIri($value);
-        } catch (\Throwable $e) {
-            $this->context
-                ->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $value)
-                ->addViolation();
-        }
+  public function validate(mixed $value, Constraint $constraint): void
+  {
+    if (!$constraint instanceof TabExists) {
+      throw new UnexpectedTypeException($constraint, TabExists::class);
     }
+
+    if (empty($value)) {
+      return;
+    }
+    
+    if (!is_string($value)) {
+      throw new UnexpectedValueException($value, 'string');
+    }
+
+    try {
+      $this->iriConverter->getResourceFromIri($value);
+    } catch (\Throwable $e) {
+      $this->context
+        ->buildViolation($constraint->message)
+        ->setParameter('{{ value }}', $value)
+        ->addViolation();
+    }
+  }
 }

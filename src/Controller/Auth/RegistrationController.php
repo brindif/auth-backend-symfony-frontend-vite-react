@@ -20,78 +20,78 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/api/register', name: 'api_register', methods: ['POST'])]
 class RegistrationController extends AbstractController
 {
-    public function __construct(private EmailVerifier $emailVerifier)
-    {
+  public function __construct(private EmailVerifier $emailVerifier)
+  {
+  }
+
+  public function __invoke(
+    Request $request,
+    UserPasswordHasherInterface $userPasswordHasher,
+    Security $security,
+    EntityManagerInterface $em,
+    ValidatorInterface $validator
+  ): JsonResponse
+  {
+    try{
+      $data = $request->toArray();
+    } catch (\JsonException $e) {
+      return new JsonResponse([
+        'success' => false,
+        'message' => 'register.error.request'
+      ], Response::HTTP_BAD_REQUEST);
     }
 
-    public function __invoke(
-        Request $request,
-        UserPasswordHasherInterface $userPasswordHasher,
-        Security $security,
-        EntityManagerInterface $em,
-        ValidatorInterface $validator
-    ): JsonResponse
-    {
-        try{
-            $data = $request->toArray();
-        } catch (\JsonException $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'register.error.request'
-            ], Response::HTTP_BAD_REQUEST);
-        }
+    $dto = new RegisterInput();
+    $dto->email = $data['email'] ?? null;
+    $dto->password = $data['password'] ?? null;
 
-        $dto = new RegisterInput();
-        $dto->email = $data['email'] ?? null;
-        $dto->password = $data['password'] ?? null;
-
-        $violations = $validator->validate($dto);
-        if (count($violations) > 0) {
-            foreach ($violations as $v) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => $v->getMessage()
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-        }
-
-        $user = new User();
-        $user->setEmail($dto->email);
-        $user->setPassword($userPasswordHasher->hashPassword($user, $dto->password));
-        $user->setIsVerified(false);
-
-        $violations = $validator->validate($user);
-        if (count($violations) > 0) {
-            foreach ($violations as $v) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => $v->getMessage()
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-        }
-
-        $em->persist($user);
-        $em->flush();
-
-        // generate a signed url and email it to the user
-        try {
-            $this->emailVerifier->sendEmailConfirmation('api_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address(
-                        $this->getParameter('mailer.email'),
-                        $this->getParameter('mailer.sender')
-                    ))
-                    ->to((string) $user->getEmail())
-                    ->subject($this->getParameter('mailer.subject'))
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-        } catch (\JsonException $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'register.error.send.confirmation'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        return new JsonResponse(['success' => true], Response::HTTP_CREATED);
+    $violations = $validator->validate($dto);
+    if (count($violations) > 0) {
+      foreach ($violations as $v) {
+        return new JsonResponse([
+          'success' => false,
+          'message' => $v->getMessage()
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+      }
     }
+
+    $user = new User();
+    $user->setEmail($dto->email);
+    $user->setPassword($userPasswordHasher->hashPassword($user, $dto->password));
+    $user->setIsVerified(false);
+
+    $violations = $validator->validate($user);
+    if (count($violations) > 0) {
+      foreach ($violations as $v) {
+        return new JsonResponse([
+          'success' => false,
+          'message' => $v->getMessage()
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+      }
+    }
+
+    $em->persist($user);
+    $em->flush();
+
+    // generate a signed url and email it to the user
+    try {
+      $this->emailVerifier->sendEmailConfirmation('api_verify_email', $user,
+        (new TemplatedEmail())
+          ->from(new Address(
+            $this->getParameter('mailer.email'),
+            $this->getParameter('mailer.sender')
+          ))
+          ->to((string) $user->getEmail())
+          ->subject($this->getParameter('mailer.subject'))
+          ->htmlTemplate('registration/confirmation_email.html.twig')
+      );
+    } catch (\JsonException $e) {
+      return new JsonResponse([
+        'success' => false,
+        'message' => 'register.error.send.confirmation'
+      ], Response::HTTP_BAD_REQUEST);
+    }
+
+    return new JsonResponse(['success' => true], Response::HTTP_CREATED);
+  }
 }

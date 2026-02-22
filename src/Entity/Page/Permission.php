@@ -16,63 +16,63 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Index(columns: ['tab_id', 'user_id'])]
 class Permission
 {
-    use TimestampableEntity;
-    use BlameableEntity;
+  use TimestampableEntity;
+  use BlameableEntity;
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+  #[ORM\Id]
+  #[ORM\GeneratedValue]
+  #[ORM\Column]
+  private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'permissions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Tab $tab = null;
+  #[ORM\ManyToOne(inversedBy: 'permissions')]
+  #[ORM\JoinColumn(nullable: false)]
+  private ?Tab $tab = null;
 
-    #[ORM\ManyToOne(inversedBy: 'permissions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+  #[ORM\ManyToOne(inversedBy: 'permissions')]
+  #[ORM\JoinColumn(nullable: false)]
+  private ?User $user = null;
 
-    #[ORM\Column(enumType: PermissionEnum::class)]
-    private PermissionEnum $permission = PermissionEnum::READ;
+  #[ORM\Column(enumType: PermissionEnum::class)]
+  private PermissionEnum $permission = PermissionEnum::READ;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-    public function getTab(): ?Tab
-    {
-        return $this->tab;
-    }
+  public function getTab(): ?Tab
+  {
+    return $this->tab;
+  }
 
-    public function setTab(?Tab $tab): static
-    {
-        $this->tab = $tab;
+  public function setTab(?Tab $tab): static
+  {
+    $this->tab = $tab;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
+  public function getUser(): ?User
+  {
+    return $this->user;
+  }
 
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
+  public function setUser(?User $user): static
+  {
+    $this->user = $user;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getPermission(): PermissionEnum
-    {
-        return $this->permission;
-    }
+  public function getPermission(): PermissionEnum
+  {
+    return $this->permission;
+  }
 
-    public function setPermission(PermissionEnum $permission): static
-    {
-        $this->permission = $permission;
+  public function setPermission(PermissionEnum $permission): static
+  {
+    $this->permission = $permission;
 
-        return $this;
-    }
+    return $this;
+  }
 }

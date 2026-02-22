@@ -14,30 +14,30 @@ use App\Entity\Page\Tab as TabEntity;
 
 final class TabDeleteProcessor implements ProcessorInterface
 {
-    public function __construct(
-        private Security $security,
-        private EntityManagerInterface $em,
-    ) {}
+  public function __construct(
+    private Security $security,
+    private EntityManagerInterface $em,
+  ) {}
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
-    {
-        \assert($data instanceof TabResource);
+  public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
+  {
+    \assert($data instanceof TabResource);
 
-        $user = $this->security->getUser();
-        if(!$user || !$user instanceof User) {
-            throw new InvalidArgumentException('tab.error.user.not_found');
-        }
-
-        $tab = $this->em->find(TabEntity::class, $uriVariables['id']);
-        if (!$tab) {
-            throw new NotFoundHttpException('tab.error.not_found');
-        }
-        if(! $this->security->isGranted('manage', $tab)) {
-            throw new AccessDeniedException('tab.error.access');
-        }
-
-        $tab->setDeletedAt(new \DateTime());
-        $this->em->persist($tab);
-        $this->em->flush();
+    $user = $this->security->getUser();
+    if(!$user || !$user instanceof User) {
+      throw new InvalidArgumentException('tab.error.user.not_found');
     }
+
+    $tab = $this->em->find(TabEntity::class, $uriVariables['id']);
+    if (!$tab) {
+      throw new NotFoundHttpException('tab.error.not_found');
+    }
+    if(! $this->security->isGranted('manage', $tab)) {
+      throw new AccessDeniedException('tab.error.access');
+    }
+
+    $tab->setDeletedAt(new \DateTime());
+    $this->em->persist($tab);
+    $this->em->flush();
+  }
 }

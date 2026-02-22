@@ -9,17 +9,17 @@ use ApiPlatform\OpenApi\Model\Operation;
 use App\Dto\Auth\PatchCurrentUserInput;
 
 #[ApiResource(
-    operations: [
-        new Patch(
-            uriTemplate: '/api/me',
-            controller: PatchCurrentUserController::class,
-            read: false,
-            input: PatchCurrentUserInput::class,
-            output: false,
-            name: 'api_patch_current_user',
-            openapi: new Operation(tags: ['Auth'])
-        ),
-    ]
+  operations: [
+    new Patch(
+      uriTemplate: '/api/me',
+      controller: PatchCurrentUserController::class,
+      read: false,
+      input: PatchCurrentUserInput::class,
+      output: false,
+      name: 'api_patch_current_user',
+      openapi: new Operation(tags: ['Auth'])
+    ),
+  ]
 )]
 final class PatchCurrentUser
 {

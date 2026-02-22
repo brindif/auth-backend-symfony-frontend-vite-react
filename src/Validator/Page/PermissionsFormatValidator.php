@@ -10,40 +10,40 @@ use App\Enum\PermissionEnum;
 
 class PermissionsFormatValidator extends ConstraintValidator
 {
-    public function __construct(private IriConverterInterface $iriConverter) {}
+  public function __construct(private IriConverterInterface $iriConverter) {}
 
-    public function validate(mixed $value, Constraint $constraint): void
-    {
-        if (!$constraint instanceof PermissionsFormat) {
-            throw new UnexpectedTypeException($constraint, PermissionsFormat::class);
-        }
-
-        if (empty($value)) {
-            return;
-        }
-        
-        if (!is_array($value)) {
-            return;
-        }
-
-        foreach ($value as $permission) {
-            if (!is_string($permission['user']) || !is_string($permission['permission'])) {
-                $this->context->buildViolation($constraint->message)->addViolation();
-                return;
-            }
-            if (!in_array($permission['permission'], [
-                PermissionEnum::READ->value,
-                PermissionEnum::WRITE->value,
-                PermissionEnum::MANAGE->value,
-            ])) {
-                $this->context->buildViolation($constraint->message)->addViolation();
-                return;
-            }
-            try {
-                $this->iriConverter->getResourceFromIri($permission['user']);
-            } catch (\Throwable $e) {
-                $this->context->buildViolation($constraint->message)->addViolation();
-            }
-        }
+  public function validate(mixed $value, Constraint $constraint): void
+  {
+    if (!$constraint instanceof PermissionsFormat) {
+      throw new UnexpectedTypeException($constraint, PermissionsFormat::class);
     }
+
+    if (empty($value)) {
+      return;
+    }
+    
+    if (!is_array($value)) {
+      return;
+    }
+
+    foreach ($value as $permission) {
+      if (!is_string($permission['user']) || !is_string($permission['permission'])) {
+        $this->context->buildViolation($constraint->message)->addViolation();
+        return;
+      }
+      if (!in_array($permission['permission'], [
+        PermissionEnum::READ->value,
+        PermissionEnum::WRITE->value,
+        PermissionEnum::MANAGE->value,
+      ])) {
+        $this->context->buildViolation($constraint->message)->addViolation();
+        return;
+      }
+      try {
+        $this->iriConverter->getResourceFromIri($permission['user']);
+      } catch (\Throwable $e) {
+        $this->context->buildViolation($constraint->message)->addViolation();
+      }
+    }
+  }
 }

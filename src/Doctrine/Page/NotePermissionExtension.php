@@ -8,7 +8,7 @@ use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Page\Permission;
 use App\Entity\Page\Tab;
-use App\Entity\Page\Note;
+use App\Entity\Content\Note;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 

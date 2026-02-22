@@ -9,17 +9,17 @@ use App\Controller\Auth\UpdateWithTokenController;
 use App\Dto\Auth\UpdateWithTokenInput;
 
 #[ApiResource(
-    operations: [
-        new Patch(
-            uriTemplate: '/me/token',
-            controller: UpdateWithTokenController::class,
-            read: false,
-            input: UpdateWithTokenInput::class,
-            output: false,
-            name: 'api_update_with_token',
-            openapi: new Operation(tags: ['Auth'])
-        ),
-    ]
+  operations: [
+    new Patch(
+      uriTemplate: '/me/token',
+      controller: UpdateWithTokenController::class,
+      read: false,
+      input: UpdateWithTokenInput::class,
+      output: false,
+      name: 'api_update_with_token',
+      openapi: new Operation(tags: ['Auth'])
+    ),
+  ]
 )]
 final class UpdateWithToken
 {

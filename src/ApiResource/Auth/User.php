@@ -20,70 +20,60 @@ use App\State\Auth\UserPutProcessor;
 use App\State\Auth\UserDeleteProcessor;
 
 #[ApiResource(
-    shortName: 'User',
-    openapi: new Operation(tags: ['User']),
-    stateOptions: new Options(entityClass: UserEntity::class),
-    operations: [
-        new Post(
-            uriTemplate: '/user',
-            name: 'api_user_post',
-            security: "is_granted('ROLE_ADMIN', object)"
-        ),
-        new GetCollection(
-            uriTemplate: '/users',
-            name: 'api_user_collection',
-        ),
-        new Get(
-            uriTemplate: '/user/{id}',
-            name: 'api_user_get',
-        ),
-        new Put(
-            uriTemplate: '/user/{id}',
-            name: 'api_user_put',
-            processor: UserPutProcessor::class,
-            input: UserPutInput::class,
-            security: "is_granted('ROLE_ADMIN', object)"
-        ),
-        new Patch(
-            uriTemplate: '/user/{id}',
-            name: 'api_user_patch',
-            security: "is_granted('ROLE_ADMIN', object)"
-        ),
-        new Delete(
-            uriTemplate: '/user/{id}',
-            name: 'api_user_delete',
-            read: false,
-            output: false,
-            processor: UserDeleteProcessor::class,
-        ),
-    ]
+  shortName: 'User',
+  openapi: new Operation(tags: ['User']),
+  stateOptions: new Options(entityClass: UserEntity::class),
+  operations: [
+    new GetCollection(
+      uriTemplate: '/users',
+      name: 'api_user_collection',
+    ),
+    new Get(
+      uriTemplate: '/user/{id}',
+      name: 'api_user_get',
+    ),
+    new Put(
+      uriTemplate: '/user/{id}',
+      name: 'api_user_put',
+      processor: UserPutProcessor::class,
+      input: UserPutInput::class,
+      security: "is_granted('ROLE_ADMIN', object)"
+    ),
+    new Delete(
+      uriTemplate: '/user/{id}',
+      name: 'api_user_delete',
+      read: false,
+      output: false,
+      processor: UserDeleteProcessor::class,
+    ),
+  ]
 )]
 
 #[Map(source: UserEntity::class)]
 final class User
 {
-    #[ApiProperty(identifier: true)]
-    public ?int $id = null;
+  #[ApiProperty(identifier: true)]
+  public ?int $id = null;
 
-    #[ApiProperty(readable: false, writable: true)]
-    public ?string $iri = null;
+  #[ApiProperty(readable: false, writable: true)]
+  public ?string $iri = null;
 
-    public ?string $name = null;
+  public ?string $name = null;
 
-    public ?string $email = null;
+  public ?string $email = null;
 
-    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
-    public ?array $roles = null;
+  #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+  public ?array $roles = null;
 
-    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
-    public bool $isVerified = false;
+  #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+  public bool $isVerified = false;
 
-    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
-    public ?DateTimeInterface $createdAt = null;
+  #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+  public ?DateTimeInterface $createdAt = null;
 
-    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
-    public ?DateTimeInterface $updatedAt = null;
+  #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+  public ?DateTimeInterface $updatedAt = null;
 
-    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
-    public ?string $updatedBy = null;
+  #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
+  public ?string $updatedBy = null;
 }

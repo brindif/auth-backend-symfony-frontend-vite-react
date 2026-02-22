@@ -11,22 +11,22 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 trait AuditableTrait
 {
-    use TimestampableEntity;   // createdAt, updatedAt
-    use BlameableEntity;       // createdBy, updatedBy
-    use SoftDeleteableEntity;  // deletedAt
+  use TimestampableEntity;   // createdAt, updatedAt
+  use BlameableEntity;       // createdBy, updatedBy
+  use SoftDeleteableEntity;  // deletedAt
 
-    #[ORM\Column(type: 'string', length: 180, nullable: true)]
-    #[Gedmo\Blameable(on: 'change', field: 'deletedAt')]
-    private ?string $deletedBy = null;
+  #[ORM\Column(type: 'string', length: 180, nullable: true)]
+  #[Gedmo\Blameable(on: 'change', field: 'deletedAt')]
+  private ?string $deletedBy = null;
 
-    public function getDeletedBy(): ?string
-    {
-        return $this->deletedBy;
-    }
+  public function getDeletedBy(): ?string
+  {
+    return $this->deletedBy;
+  }
 
-    public function setDeletedBy(?string $deletedBy): self
-    {
-        $this->deletedBy = $deletedBy;
-        return $this;
-    }
+  public function setDeletedBy(?string $deletedBy): self
+  {
+    $this->deletedBy = $deletedBy;
+    return $this;
+  }
 }

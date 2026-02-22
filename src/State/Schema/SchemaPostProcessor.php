@@ -1,0 +1,47 @@
+<?php
+namespace App\State\Schema;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use App\Dto\Schema\SchemaPostInput;
+use Doctrine\ORM\EntityManagerInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
+use App\Entity\Page\Tab as TabEntity;
+use App\Entity\Content\Schema as SchemaEntity;
+use App\ApiResource\Content\Schema as SchemaResource;
+use Symfony\Component\ObjectMapper\ObjectMapperInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+
+final class SchemaPostProcessor implements ProcessorInterface
+{
+  public function __construct(
+    private Security $security,
+    private EntityManagerInterface $em,
+    private IriConverterInterface $iriConverter,
+    private ObjectMapperInterface $objectMapper,
+  ) {}
+
+  public function process(
+    mixed $data,
+    Operation $operation,
+    array $uriVariables = [],
+    array $context = []): SchemaResource
+  {
+    \assert($data instanceof SchemaPostInput);
+
+    $user = $this->security->getUser();
+    if(!$user) {
+      throw new \InvalidArgumentException('schema.error.user.not_found');
+    }
+
+    $schema = new SchemaEntity();
+
+    $this->em->persist($schema);
+    $this->em->flush();
+
+    $output = $this->objectMapper->map($schema, SchemaResource::class);
+    $output->iri = $this->iriConverter->getIriFromResource($schema->getId());
+
+    return $output;
+  }
+}

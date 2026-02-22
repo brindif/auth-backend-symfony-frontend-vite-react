@@ -11,23 +11,23 @@ use App\Entity\Auth\User;
 #[Route('/api/me', name: 'api_get_current_user', methods: ['GET'])]
 final class GetCurrentUserController
 {
-    public function __invoke(#[CurrentUser] ?User $user): JsonResponse
-    {
-        if (!$user) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'current.user.error.unknow',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
-        return new JsonResponse([
-            'success' => true,
-            'message' => 'current.user.success',
-            'user' => [
-                'name' => $user->getName(),
-                'email' => $user->getEmail(),
-                'roles' => $user->getRoles(),
-            ],
-        ], Response::HTTP_OK);
+  public function __invoke(#[CurrentUser] ?User $user): JsonResponse
+  {
+    if (!$user) {
+      return new JsonResponse([
+        'success' => false,
+        'message' => 'current.user.error.unknow',
+      ], Response::HTTP_UNAUTHORIZED);
     }
+
+    return new JsonResponse([
+      'success' => true,
+      'message' => 'current.user.success',
+      'user' => [
+        'name' => $user->getName(),
+        'email' => $user->getEmail(),
+        'roles' => $user->getRoles(),
+      ],
+    ], Response::HTTP_OK);
+  }
 }
